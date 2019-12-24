@@ -25,16 +25,9 @@ class Oastowso2 extends Command {
 
   async run() {
     const {args, flags} = this.parse(Oastowso2)
-
     const name = flags.name || 'swagger.yaml'
-    this.log(`hello ${name} from ./src/index.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
     var rslt=await apiToken.getCredintials();
-    console.info(rslt)
     var key = 'Bearer '+await rslt
-    console.log(key)
     var rep = await readSwagger.readSwagger(name,key);
     console.log(rep)
   }
