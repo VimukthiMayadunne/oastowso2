@@ -3,10 +3,6 @@ const request = require("request");
 const readYaml = require("read-yaml");
 const FormData = require('form-data');
 const fs = require('fs');
-const http = require('http');
-
-let wso2uri = "https://localhost:9443/api/am/publisher/v0.15/";
-
 
 async function sendRequest(data: any) {
   return new Promise(async function(resolve, reject) {
@@ -26,7 +22,7 @@ async function sendRequest(data: any) {
   });
 }
 
-async function readSwagger(filename: string,key:string) {
+async function readSwagger(filename: string,key:string ,uri:string) {
   return new Promise(async function(resolve, reject) {
     try {
       readYaml(filename, async function(err: any, data: any) {
@@ -35,7 +31,7 @@ async function readSwagger(filename: string,key:string) {
         } else {
           var swagger = await data;
           var rslt =
-            swagger.openapi != null ? oas3(swagger,key) : swagger2(swagger,key);
+            swagger.openapi != null ? oas3(swagger,key,uri,filename) : swagger2(swagger,key,uri,filename);
           resolve(rslt);
         }
       });
@@ -46,19 +42,19 @@ async function readSwagger(filename: string,key:string) {
   });
 }
 
-async function sendSwagger(key: string , endpoint: string , name:string , context:string , version:any,swagger:any) {
+async function sendSwagger(key: string , endpoint: string , name:string , context:string , version:any,filename:string,uri:string) {
   return new Promise(async function(resolve, reject) {
     try {
       var options = {
         method: "POST",
-        url: "https://localhost:9443/api/am/publisher/v1/apis/import-openapi",
+        url: uri+'/api/am/publisher/v1/apis/import-openapi',
         headers: {
           Authorization: key,
           "content-type":
             "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
         },
         formData:{ 
-           file : fs.createReadStream('swagger.yaml'),
+           file : fs.createReadStream(filename),
           'additionalProperties': `{ "name": "${name}", "context" : "${context}", "version" : "${version}", "endpointConfig":{"production_endpoints":{"url":"${endpoint}","config":"null"},"sandbox_endpoints":{"url":"${endpoint}","config":"null"},"endpoint_type":"http"}}`
          }     
       }
@@ -93,14 +89,14 @@ async function addCache() {
   });
 }
 
-async function oas3(swagger: any , key:string) {
+async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
   return new Promise(async function(resolve, reject) {
     try {
       console.log("Swagger", swagger.servers["0"]);
       var host = swagger.servers["0"].url + "/";
       var name = swagger.info.title;
       var Bname = name.replace(/\W/g, "");
-      var reslt = await sendSwagger(key , host , name , Bname ,swagger.info.version ,swagger)
+      var reslt = await sendSwagger(key , host , name , Bname ,swagger.info.version ,filename,uri)
       resolve(reslt)
     } catch (error) {
       console.log(
@@ -112,7 +108,7 @@ async function oas3(swagger: any , key:string) {
   });
 }
 
-async function swagger2(swagger: any , key:string) {
+async function swagger2(swagger: any , key:string , uri:string , filename:string) {
   return new Promise(async function(resolve, reject) {
     try {
       var host =
@@ -120,7 +116,7 @@ async function swagger2(swagger: any , key:string) {
       var name = swagger.info.title;
       var Bname = name.replace(/\W/g, "");
       console.log(key , host , name , Bname ,swagger.info.version)
-      var reslt = await sendSwagger(key , host , name , Bname ,swagger.info.version ,swagger)
+      var reslt = await sendSwagger(key , host , name , Bname ,swagger.info.version ,filename,uri)
       resolve(reslt);
     } catch (error) {
       console.log(

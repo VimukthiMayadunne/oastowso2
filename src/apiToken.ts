@@ -19,28 +19,29 @@ async function sendRequest(data:any){
     })
 }
 
-async function getCredintials(){
+async function getCredintials(uri:string,username:string,password:string){
+
     let options = { method: 'POST',
-    url: 'https://localhost:9443/client-registration/v0.15/register',
+    url: uri+'/client-registration/v0.15/register',
     headers: 
     {
         Connection: 'keep-alive',
-        Host: 'localhost:9443',
+        Host: 'localhost:9763',
         Accept: '*/*',
         'Content-Type': 'application/json',
         Authorization: 'Basic YWRtaW46YWRtaW4=' },
     body: 
-    { callbackUrl: 'www.google.lk',
+    {   callbackUrl: 'www.google.lk',
         clientName: 'rest_api_publisher',
         owner: 'admin',
         grantType: 'password refresh_token',
         saasApp: true },
     json: true };
-    
     return new Promise(async function(resolve,reject){
         try{
             var body:any = await sendRequest(options)
-            var rslt = await getToken('admin','admin',body.clientId,body.clientSecret,'password')
+            console.log(body)
+            var rslt = await getToken(username,password,body.clientId,body.clientSecret,'password')
             resolve(rslt);
         }
         catch(err){
