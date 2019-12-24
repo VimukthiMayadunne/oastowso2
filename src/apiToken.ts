@@ -21,7 +21,7 @@ async function sendRequest(data:any){
 
 async function getCredintials(){
     let options = { method: 'POST',
-    url: 'http://localhost:9763/client-registration/v0.15/register',
+    url: 'https://localhost:9443/client-registration/v0.15/register',
     headers: 
     {
         Connection: 'keep-alive',
@@ -52,12 +52,12 @@ async function getCredintials(){
 async function getToken(username:string,password:string ,ck:string , cs:string ,gType:string){
     var Auth = await decode(ck,cs)
     let options = { method: 'POST',
-    url: 'http://localhost:8280/token',
+    url: ' https://localhost:8243/token',
   headers: 
    {
      Connection: 'keep-alive',
      'Content-Type': 'application/x-www-form-urlencoded',
-     Host: 'localhost:8280',    
+     Host: 'localhost:8243',    
      Accept: 'application/json',
      Authorization: Auth },
   form: 

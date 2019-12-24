@@ -1,10 +1,13 @@
 export{}
 const request = require("request");
 const readYaml = require("read-yaml");
-var FormData = require('form-data');
+const FormData = require('form-data');
+const fs = require('fs');
+const http = require('http');
+
+let wso2uri = "https://localhost:9443/api/am/publisher/v0.15/";
 
 
-let wso2uri = "https://localhost:9443/api/am/publisher/v0.15";
 async function sendRequest(data: any) {
   return new Promise(async function(resolve, reject) {
     try {
@@ -48,18 +51,19 @@ async function sendSwagger(key: string , endpoint: string , name:string , contex
     try {
       var options = {
         method: "POST",
-        url: "http://localhost:9763/api/am/publisher/v1/apis/import-openapi",
+        url: "https://localhost:9443/api/am/publisher/v1/apis/import-openapi",
         headers: {
           Authorization: key,
           "content-type":
             "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
         },
         formData:{ 
-           file : swagger,
+           file : fs.createReadStream('swagger.yaml'),
           'additionalProperties': `{ "name": "${name}", "context" : "${context}", "version" : "${version}", "endpointConfig":{"production_endpoints":{"url":"${endpoint}","config":"null"},"sandbox_endpoints":{"url":"${endpoint}","config":"null"},"endpoint_type":"http"}}`
          }     
       }
-      sendRequestts(options) 
+      var res=sendRequest(options);
+      console.log(res) 
     }
     
     catch (err) {
@@ -144,5 +148,45 @@ async function sendRequestts(data:any){
       }  
   })
 }
+
+async function senSwg(key: string , endpoint: string , name:string , context:string , version:any,swagger:any) {
+  return new Promise(async function(resolve, reject) {
+    try {
+
+      var formData = {
+        file: fs.createReadStream('swagger.yaml'),
+        'additionalProperties': `{ "name": "${name}", "context" : "${context}", "version" : "${version}", "endpointConfig":{"production_endpoints":{"url":"${endpoint}","config":"null"},"sandbox_endpoints":{"url":"${endpoint}","config":"null"},"endpoint_type":"http"}}`
+      };
+      
+      request.post({url:'http://service.com/upload', formData: formData}, function(err: any, httpResponse: any, body: any) {
+        if (err) {
+          return console.error('upload failed:', err);
+        }
+        console.log('Upload successful!  Server responded with:', body);
+      });
+
+
+
+
+
+    } 
+    catch (err) {}
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = { sendSwagger , readSwagger };
