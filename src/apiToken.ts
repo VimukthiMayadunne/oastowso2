@@ -37,10 +37,10 @@ async function getCredintials(uri:string,username:string,password:string){
         grantType: 'password refresh_token',
         saasApp: true },
     json: true };
+    
     return new Promise(async function(resolve,reject){
         try{
             var body:any = await sendRequest(options)
-            console.log(body)
             var rslt = await getToken(username,password,body.clientId,body.clientSecret,'password')
             resolve(rslt);
         }

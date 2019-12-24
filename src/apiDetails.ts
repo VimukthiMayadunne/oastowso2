@@ -2,6 +2,7 @@ export{}
 const request = require("request");
 const readYaml = require("read-yaml");
 const FormData = require('form-data');
+const apiFedarationSpec = require ('./apiFedaration');
 const fs = require('fs');
 
 async function sendRequest(data: any) {
@@ -13,7 +14,6 @@ async function sendRequest(data: any) {
         body: any
       ) {
         if (error) throw new Error(error);
-        console.log(body);
         resolve(body);
       });
     } catch (err) {
@@ -32,6 +32,7 @@ async function readSwagger(filename: string,key:string ,uri:string) {
           var swagger = await data;
           var rslt =
             swagger.openapi != null ? oas3(swagger,key,uri,filename) : swagger2(swagger,key,uri,filename);
+          var spec = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,key )
           resolve(rslt);
         }
       });
@@ -59,7 +60,7 @@ async function sendSwagger(key: string , endpoint: string , name:string , contex
          }     
       }
       var res=sendRequest(options);
-      console.log(res) 
+      resolve(res)
     }
     
     catch (err) {
@@ -68,26 +69,7 @@ async function sendSwagger(key: string , endpoint: string , name:string , contex
   });
 }
 
-async function addRateLimiting() {
-  return new Promise(async function(resolve, reject) {
-    try {
-    } catch (err) {}
-  });
-}
 
-async function addCORS() {
-  return new Promise(async function(resolve, reject) {
-    try {
-    } catch (err) {}
-  });
-}
-
-async function addCache() {
-  return new Promise(async function(resolve, reject) {
-    try {
-    } catch (err) {}
-  });
-}
 
 async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
   return new Promise(async function(resolve, reject) {
@@ -144,45 +126,6 @@ async function sendRequestts(data:any){
       }  
   })
 }
-
-async function senSwg(key: string , endpoint: string , name:string , context:string , version:any,swagger:any) {
-  return new Promise(async function(resolve, reject) {
-    try {
-
-      var formData = {
-        file: fs.createReadStream('swagger.yaml'),
-        'additionalProperties': `{ "name": "${name}", "context" : "${context}", "version" : "${version}", "endpointConfig":{"production_endpoints":{"url":"${endpoint}","config":"null"},"sandbox_endpoints":{"url":"${endpoint}","config":"null"},"endpoint_type":"http"}}`
-      };
-      
-      request.post({url:'http://service.com/upload', formData: formData}, function(err: any, httpResponse: any, body: any) {
-        if (err) {
-          return console.error('upload failed:', err);
-        }
-        console.log('Upload successful!  Server responded with:', body);
-      });
-
-
-
-
-
-    } 
-    catch (err) {}
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 module.exports = { sendSwagger , readSwagger };
