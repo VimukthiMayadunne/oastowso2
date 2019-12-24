@@ -41,7 +41,7 @@
   ],
   "homepage": "https://github.com/VimukthiMayadunne/oastowso2",
   "keywords": [
-    "oclif"
+    "oclif","wso2","CLI","OAS","Swagger","Converter"
   ],
   "license": "MIT",
   "main": "lib/index.js",
