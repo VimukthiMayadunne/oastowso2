@@ -32,6 +32,7 @@ class Oastowso2 extends Command {
     const password = flags.username || 'admin'
     var rslt=await apiToken.getCredintials(uri,userName,password);
     var key = 'Bearer '+await rslt
+    console.log(key)
     var rep = await readSwagger.readSwagger(name,key,uri);
     console.log(rep)
   }

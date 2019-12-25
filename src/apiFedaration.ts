@@ -1,10 +1,10 @@
 export{}
 const request = require("request");
 
-async function apiFedarationSpec(fedarationSpec:any ,key:string){
+async function apiFedarationSpec(fedarationSpec:any ,key:string ,apiid:string){
     return new Promise(async function(resolve, reject) {
         try {
-            (fedarationSpec['x-global-cache'] != null)?addCache(fedarationSpec['x-global-cache'],key):null;
+            (fedarationSpec['x-global-cache'] != null)?addCache(fedarationSpec['x-global-cache'],key,apiid):null;
             resolve(0)
         } 
         catch (err) {
@@ -46,11 +46,12 @@ async function addRateLimiting() {
     });
   }
   
-  async function addCache(time:number,key:string) {
+  async function addCache(time:number,key:string,apiid:string) {
     return new Promise(async function(resolve, reject) {
       try {
           console.info(time)
           console.info(key)
+          console.info(apiid)
       } catch (err) {}
     });
   }
