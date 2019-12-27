@@ -84,8 +84,7 @@ async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
     } catch (error) {
       console.log(
         "Please make sure the Swagger filr contains the following fileds"
-      );
-      console.log("1.Schemse 2.Host 3.BasePath");
+      ,error);
       reject(error);
     }
   });
@@ -101,11 +100,11 @@ async function swagger2(swagger: any , key:string , uri:string , filename:string
       console.log(key , host , name , Bname ,swagger.info.version)
       var reslt = await sendSwagger(key , host , name , Bname ,swagger.info.version , swagger.info.description ,filename,uri)
       resolve(reslt);
-    } catch (error) {
+    } 
+    catch (error) {
       console.log(
         "Please make sure the Swagger filr contains the following fileds"
-      );
-      console.log("1.Schemse 2.Host 3.BasePath");
+      ,error);
       reject(error);
     }
   });
