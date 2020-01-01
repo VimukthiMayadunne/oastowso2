@@ -5,6 +5,7 @@ const FormData = require('form-data');
 const apiFedarationSpec = require ('./apiFedaration');
 const fs = require('fs');
 const AdditionalProperties=require('./models/additionalProperties')
+const EndpointConfig = require('./models/endpoitConfig')
 
 async function sendRequest(data: any) {
   return new Promise(async function(resolve, reject) {
@@ -80,15 +81,22 @@ async function sendSwagger(apo:any,  key: string , filename:string,uri:string) {
 async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
   return new Promise(async function(resolve, reject) {
     try {
-      var host = swagger.servers["0"].url + "/";
-      var name = swagger.info.title;
-      var Bname = name.replace(/\W/g, "");
-      var reslt = await sendSwagger(0, "key" , filename ,uri )
-      var spec = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,key)
-      resolve(spec)
+      console.log(swagger.servers["0"].url)
+      var host = await swagger.servers["0"].url + "/";
+      var name = await swagger.info.title;
+      var Bname = await name.replace(/\W/g, "");
+      var tags = (swagger.tags != null) ? await addtags(swagger.tags) : [];
+      var endpoint = await new EndpointConfig()
+      endpoint.production_endpoints.url = host
+      endpoint.sandbox_endpoints.url =host
+      console.log("host is :",endpoint)
+      var additionalProperties = await new AdditionalProperties({name:name,description:swagger.info.description,context:Bname,version:swagger.info.version , endpointConfig:endpoint, tags:tags  })
+      var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties )
+      var reslt:any = await sendSwagger(adpobj,key,filename,uri)
+      resolve(reslt);
     } catch (error) {
       console.log(
-        "Please make sure the Swagger filr contains the following fileds"
+        "Please make sure the Swagger file contains the following fileds"
       ,error);
       reject(error);
     }

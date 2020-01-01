@@ -1,3 +1,4 @@
+import { string } from '@oclif/parser/lib/flags';
 
 
 export{};
@@ -19,6 +20,32 @@ let AdditionalPropertiesSchema = new Schema({
     'version':{
         type:String,
         require:true
+    },
+    'endpointConfig':{
+        'production_endpoints':{
+            'url':{
+                type:String,
+                default:"url"
+            },
+            'config':{
+                type:String,
+                default:null
+            }
+        },
+        "sandbox_endpoints":{
+            'url':{
+                type:String,
+                default:"url"
+            },
+            'config':{
+                type:String,
+                default:null
+        }
+    },
+        "endpoint_type":{
+            type:String,
+            default:"http"
+        }
     },
     'tags':{
         type:Array
