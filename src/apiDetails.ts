@@ -10,15 +10,13 @@ const EndpointConfig = require('./models/endpoitConfig')
 async function sendRequest(data: any) {
   return new Promise(async function(resolve, reject) {
     try {
-      request(data, async function(
-        error: string | undefined,
-        response: any,
-        body: any
+      request(data, async function(error: string | undefined,response: any,body: any
       ) {
         if (error) throw new Error(error);
         resolve(body);
       });
     } catch (err) {
+      console.error(err)
       reject(err);
     }
   });
@@ -45,7 +43,6 @@ async function readSwagger(filename: string,key:string ,uri:string) {
 }
 
 async function sendSwagger(apo:any,  key: string , filename:string,uri:string) {
-  console.log(apo)
   return new Promise(async function(resolve, reject) {
     try {
       var rslt = JSON.stringify(apo)
@@ -69,7 +66,6 @@ async function sendSwagger(apo:any,  key: string , filename:string,uri:string) {
       console.log(res)
       resolve(job.id)
     }
-    
     catch (err) {
       reject(err);
     }
@@ -95,9 +91,7 @@ async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
       var reslt:any = await sendSwagger(adpobj,key,filename,uri)
       resolve(reslt);
     } catch (error) {
-      console.log(
-        "Please make sure the Swagger file contains the following fileds"
-      ,error);
+      console.log(error);
       reject(error);
     }
   });
@@ -111,15 +105,16 @@ async function swagger2(swagger: any , key:string , uri:string , filename:string
       var name = await swagger.info.title;
       var Bname = name.replace(/\W/g, "");
       var tags = (swagger.tags != null) ? await addtags(swagger.tags) : [];
+      var endpoint = await new EndpointConfig()
+      endpoint.production_endpoints.url = host
+      endpoint.sandbox_endpoints.url =host
       var additionalProperties = await new AdditionalProperties({name:name,description:swagger.info.description,context:Bname,version:swagger.info.version , tags:tags  })
       var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties )
       var reslt:any = await sendSwagger(adpobj,key,filename,uri)
       resolve(reslt);
     } 
     catch (error) {
-      console.log(
-        "Please make sure the Swagger filr contains the following fileds"
-      ,error);
+      console.log(error);
       reject(error);
     }
   });
