@@ -76,15 +76,13 @@ async function sendSwagger(apo:any,  key: string , filename:string,uri:string) {
 async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
   return new Promise(async function(resolve, reject) {
     try {
-      console.log(swagger.servers["0"].url)
       var host = await swagger.servers["0"].url + "/";
       var name = await swagger.info.title;
       var Bname = await name.replace(/\W/g, "");
       var tags = (swagger.tags != null) ? await addtags(swagger.tags) : [];
       var endpoint = await new EndpointConfig()
       endpoint.production_endpoints.url = host
-      endpoint.sandbox_endpoints.url =host
-      console.log("host is :",endpoint)
+      endpoint.sandbox_endpoints.url = host
       var additionalProperties = await new AdditionalProperties({name:name,description:swagger.info.description,context:Bname,version:swagger.info.version , endpointConfig:endpoint, tags:tags  })
       var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties )
       var reslt:any = await sendSwagger(adpobj,key,filename,uri)
