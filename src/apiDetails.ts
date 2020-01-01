@@ -4,6 +4,7 @@ const readYaml = require("read-yaml");
 const FormData = require('form-data');
 const apiFedarationSpec = require ('./apiFedaration');
 const fs = require('fs');
+const AdditionalProperties=require('./models/additionalProperties')
 
 async function sendRequest(data: any) {
   return new Promise(async function(resolve, reject) {
@@ -42,9 +43,11 @@ async function readSwagger(filename: string,key:string ,uri:string) {
   });
 }
 
-async function sendSwagger(key: string , endpoint: string , name:string , context:string , version:any, description:string, filename:string,uri:string) {
+async function sendSwagger(apo:any,  key: string , filename:string,uri:string) {
+  console.log(apo)
   return new Promise(async function(resolve, reject) {
     try {
+      var rslt = JSON.stringify(apo)
       var options = {
         method: "POST",
         url: uri+'/api/am/publisher/v1/apis/import-openapi',
@@ -56,11 +59,13 @@ async function sendSwagger(key: string , endpoint: string , name:string , contex
         },
         formData:{ 
            file : fs.createReadStream(filename),
-          'additionalProperties': `{ "name": "${name}", "context" : "${context}", "version" : "${version}", "description":${description} "endpointConfig":{"production_endpoints":{"url":"${endpoint}","config":"null"},"sandbox_endpoints":{"url":"${endpoint}","config":"null"},"endpoint_type":"http"},	"responseCachingEnabled": true,  "cacheTimeout": 550 }`
-         }     
+          //'additionalProperties': `{ "name": "${name}", "context" : "${context}", "version" : "${version}", "description":"${description}" , "endpointConfig":{"production_endpoints":{"url":"${endpoint}","config":"null"},"sandbox_endpoints":{"url":"${endpoint}","config":"null"},"endpoint_type":"http"},	"responseCachingEnabled": true,  "cacheTimeout": 550 }`,
+          additionalProperties:rslt
+        }     
       }
       var res:any=await sendRequest(options);
       var job= await JSON.parse(res)
+      console.log(res)
       resolve(job.id)
     }
     
@@ -78,8 +83,8 @@ async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
       var host = swagger.servers["0"].url + "/";
       var name = swagger.info.title;
       var Bname = name.replace(/\W/g, "");
-      var reslt = await sendSwagger(key , host , name , Bname ,swagger.info.version , swagger.info.description , filename ,uri )
-      var spec = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,key ,reslt )
+      var reslt = await sendSwagger(0, "key" , filename ,uri )
+      var spec = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,key)
       resolve(spec)
     } catch (error) {
       console.log(
@@ -95,10 +100,12 @@ async function swagger2(swagger: any , key:string , uri:string , filename:string
     try {
       var host =
         swagger.schemes["0"] + "://" + swagger.host + swagger.basePath + "/";
-      var name = swagger.info.title;
+      var name = await swagger.info.title;
       var Bname = name.replace(/\W/g, "");
-      console.log(key , host , name , Bname ,swagger.info.version)
-      var reslt = await sendSwagger(key , host , name , Bname ,swagger.info.version , swagger.info.description ,filename,uri)
+      var tags = (swagger.tags != null) ? await addtags(swagger.tags) : [];
+      var additionalProperties = await new AdditionalProperties({name:name,description:swagger.info.description,context:Bname,version:swagger.info.version , tags:tags  })
+      var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties )
+      var reslt:any = await sendSwagger(adpobj,key,filename,uri)
       resolve(reslt);
     } 
     catch (error) {
@@ -111,20 +118,17 @@ async function swagger2(swagger: any , key:string , uri:string , filename:string
 }
 
 
-async function sendRequestts(data:any){
-  return new Promise(async function(resolve,reject){
-      try{
-      request(data,async function (error: string | undefined, response: any, body: any) {
-          if (error)
-          throw new Error(error);
-          resolve(body);
-        });
-      }
-      catch(err){
-          console.error(err)
-          reject(err)
-      }  
-  })
+async function addtags(data: any) {
+  try {
+    var tags = [];
+    for (var tag in data) {
+      tags.push(data[tag].name);
+    }
+    return tags;
+  } catch (e) {
+    console.log("No tags in the Swagger File");
+    return null;
+  }
 }
 
 

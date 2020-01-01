@@ -105,3 +105,9 @@ paths:
           default: c0430ab5b358094192e01693bb0adef5
       x-auth-type: Application & Application User
       x-throttling-tier: 50KPerMin
+x-global-spec:
+  x-global-cache: 780
+  x-global-rateLimiting:
+    Interval: 1
+    timeunit: minute
+    quota: 50000

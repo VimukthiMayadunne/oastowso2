@@ -1,11 +1,11 @@
 export{}
 const request = require("request");
 
-async function apiFedarationSpec(fedarationSpec:any ,key:string ,apiid:string){
+async function apiFedarationSpec(fedarationSpec:any , adpobj:any){
     return new Promise(async function(resolve, reject) {
         try {
-            (fedarationSpec['x-global-cache'] != null)?addCache(fedarationSpec['x-global-cache'],key,apiid):null;
-            resolve(0)
+            adpobj= await (fedarationSpec['x-global-cache'] != null)?addCache(fedarationSpec['x-global-cache'],adpobj):adpobj;
+            adpobj= await resolve(adpobj)
         } 
         catch (err) {
             console.error
@@ -14,23 +14,6 @@ async function apiFedarationSpec(fedarationSpec:any ,key:string ,apiid:string){
       });
 }
 
-async function sendRequest(data: any) {
-    return new Promise(async function(resolve, reject) {
-      try {
-        request(data, async function(
-          error: string | undefined,
-          response: any,
-          body: any
-        ) {
-          if (error) throw new Error(error);
-          console.log(body);
-          resolve(body);
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  }
 
 async function addRateLimiting() {
     return new Promise(async function(resolve, reject) {
@@ -46,13 +29,16 @@ async function addRateLimiting() {
     });
   }
   
-  async function addCache(time:number,key:string,apiid:string) {
+  async function addCache(time:number,adpobj:any) {
     return new Promise(async function(resolve, reject) {
       try {
-          console.info(time)
-          console.info(key)
-          console.info(apiid)
-      } catch (err) {}
+        adpobj.responseCachingEnabled = true
+        adpobj.cacheTimeout = time
+        resolve(adpobj)
+      } catch (err) {
+          console.error(err)
+          reject(err)
+      }
     });
   }
 

@@ -12,6 +12,7 @@
     "@oclif/plugin-help": "^2.2.3",
     "form-data": "^3.0.0",
     "js-base64": "^2.5.1",
+    "mongoose": "^5.8.3",
     "read-yaml": "^1.1.0",
     "request": "^2.88.0",
     "tslib": "^1.10.0"
@@ -41,7 +42,12 @@
   ],
   "homepage": "https://github.com/VimukthiMayadunne/oastowso2",
   "keywords": [
-    "oclif","wso2","CLI","OAS","Swagger","Converter"
+    "oclif",
+    "wso2",
+    "CLI",
+    "OAS",
+    "Swagger",
+    "Converter"
   ],
   "license": "MIT",
   "main": "lib/index.js",

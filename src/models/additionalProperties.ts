@@ -5,54 +5,55 @@ const mongoose = require('mongoose');
 const Schema =mongoose.Schema;
 
 let AdditionalPropertiesSchema = new Schema({
-    name:{
+    "name":{
         type:String,
         require: true,
     },
-    description:{
+    'description':{
         type:String
     },
-    context:{
+    'context':{
         type:String,
         require:true
     },
-    version:{
+    'version':{
         type:String,
         require:true
     },
-    tags:{
+    'tags':{
         type:Array
     },
-    responseCachingEnabled:{
+    'responseCachingEnabled':{
         type:Boolean,
         default:false
     },
-    cacheTimeout:{
+    'cacheTimeout':{
         type:Number,
         default:300
     },
 
-    apiThrottlingPolicy:{
+    'apiThrottlingPolicy':{
         type:String,
+        default:"Unlimited",
         description:"The API level throttling policy selected for the particular API"
     },
-    corsConfiguration:{
-        corsConfigurationEnabled:{
+    'corsConfiguration':{
+        'corsConfigurationEnabled':{
             type:Boolean,
             default:false
         },
-        accessControlAllowOrigins:{
+        'accessControlAllowOrigins':{
             type:Array,
             default:["*"]
         },
-        accessControlAllowCredentials:{
+        'accessControlAllowCredentials':{
             type:Boolean,
             default:false
         },
-        accessControlAllowHeaders:{
+        'accessControlAllowHeaders':{
             type:Array,
         },
-        accessControlAllowMethods:{
+        'accessControlAllowMethods':{
             type:Array,
             default: [ "GET", "HEAD", "PUT", "PATCH", "POST" ]
         }
