@@ -1,7 +1,6 @@
 export{}
 const request = require("request");
 const readYaml = require("read-yaml");
-const FormData = require('form-data');
 const apiFedarationSpec = require ('./apiFedaration');
 const fs = require('fs');
 const AdditionalProperties=require('./models/additionalProperties')
