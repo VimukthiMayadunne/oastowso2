@@ -9,6 +9,8 @@ async function sendRequest(data:any){
         request(data,async function (error: string | undefined, response: any, body: any) {
             if (error)
             throw new Error(error);
+            //console.log(response)
+            console.log(body)
             resolve(body);
           });
         }
@@ -52,6 +54,7 @@ async function getCredintials(uri:string,username:string,password:string){
 
 async function getToken(username:string,password:string ,ck:string , cs:string ,gType:string){
     var Auth = await decode(ck,cs)
+    //update to get the IP and use as url
     let options = { method: 'POST',
     url: ' https://localhost:8243/token',
   headers: 
@@ -65,11 +68,12 @@ async function getToken(username:string,password:string ,ck:string , cs:string ,
    { grant_type: gType,
      username: username,
      password: password,
-     scope: 'apim:api_create' } };
+     scope: 'apim:api_create apim:tier_view apim:tier_manage' } };
     return new Promise(async function(resolve,reject){
         try{
             var body:any = await sendRequest(options)
             var filed=await JSON.parse(body)
+            //console.log("Token : ",filed)
             resolve(filed.access_token)
         }
         catch(err){

@@ -4,9 +4,10 @@ const request = require("request");
 async function apiFedarationSpec(fedarationSpec:any , adpobj:any){
     return new Promise(async function(resolve, reject) {
         try {
-            adpobj= await (fedarationSpec['x-global-cache'] != null)?await addCache(fedarationSpec['x-global-cache'],adpobj):adpobj;
+            adpobj= (fedarationSpec['x-global-cache'] != null)?await addCache(fedarationSpec['x-global-cache'],adpobj):adpobj;
             adpobj= (fedarationSpec['x-global-cors'].corsConfigurationEnabled == true)?await addCORS(fedarationSpec['x-global-cors'],adpobj):adpobj;
-            adpobj= await resolve(adpobj)
+            // adpobj= (fedarationSpec['x-global-rateLimiting'] != null)?await addRateLimiting(fedarationSpec['x-global-rateLimiting'],adpobj):adpobj;
+            resolve(adpobj)
         } 
         catch (err) {
             console.error
@@ -16,9 +17,16 @@ async function apiFedarationSpec(fedarationSpec:any , adpobj:any){
 }
 
 
-async function addRateLimiting() {
+async function addRateLimiting(rateLimiting:any , adpobj:any) {
     return new Promise(async function(resolve, reject) {
       try {
+        //var permin = TimeConverter.tominute(adpobj.Interval, adpobj.timeunit , adpobj.quota)
+
+
+
+
+
+
       } catch (err) {}
     });
   }
