@@ -1,16 +1,16 @@
-import { resolve } from 'dns'
-import { rejects } from 'assert'
-
 export{}
 
-async function tominute(interval:number ,timeUnit:string , quota:number , key:any, name:string){
+async function tominute(interval:number ,timeUnit:string , quota:number , key:any, name:string,uri:string){
     return new Promise(async function(resolve,reject){
         try{
             var advancedPolicies= await getPolicies(key)
             var policyName =await checkPolicy(advancedPolicies,interval,timeUnit,quota)
+            var policy=(policyName == 'noPolicy')?await createPolicy(interval,timeUnit,quota,key,name,uri):policyName
+            resolve(policy)
         }
         catch(err){
-
+            console.error(err)
+            reject(err)
         }
     })
 }
@@ -23,7 +23,7 @@ async function tominute(interval:number ,timeUnit:string , quota:number , key:an
 
 
 
-async function ft(interval:number ,timeUnit:string , quota:number){
+async function createPolicy(interval:number ,timeUnit:string , quota:number, key:any, name:string,uri:string){
     return new Promise(async function(resolve,reject){
         try{
 
