@@ -48,11 +48,8 @@ async function createPolicy(interval: number, timeUnit: string, quota: number, k
             request(options,async function (error: string | undefined, response: any, body: any) {
                 if (error)
                     throw new Error(error);
-                console.log(body);
-              resolve(body.policyName)
+               resolve(body.policyName)
             });
-
-
         }
         catch (err) {
             console.error(err)
