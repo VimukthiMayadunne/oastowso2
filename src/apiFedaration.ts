@@ -1,12 +1,13 @@
 export{}
 const request = require("request");
+const Time = require('./timeConverter')
 
-async function apiFedarationSpec(fedarationSpec:any , adpobj:any){
+async function apiFedarationSpec(fedarationSpec:any , adpobj:any ,name:string ,uri:string , key:any){
     return new Promise(async function(resolve, reject) {
         try {
             adpobj= (fedarationSpec['x-global-cache'] != null)?await addCache(fedarationSpec['x-global-cache'],adpobj):adpobj;
             adpobj= (fedarationSpec['x-global-cors'].corsConfigurationEnabled == true)?await addCORS(fedarationSpec['x-global-cors'],adpobj):adpobj;
-            // adpobj= (fedarationSpec['x-global-rateLimiting'] != null)?await addRateLimiting(fedarationSpec['x-global-rateLimiting'],adpobj):adpobj;
+            adpobj= (fedarationSpec['x-global-rateLimiting'] != null)?await addRateLimiting(fedarationSpec['x-global-rateLimiting'],adpobj,key,name,uri):adpobj;
             resolve(adpobj)
         } 
         catch (err) {
@@ -17,17 +18,18 @@ async function apiFedarationSpec(fedarationSpec:any , adpobj:any){
 }
 
 
-async function addRateLimiting(rateLimiting:any , adpobj:any) {
+async function addRateLimiting(rateLimiting:any , adpobj:any ,key:string , name: string, uri: string) {
     return new Promise(async function(resolve, reject) {
       try {
-        //var permin = TimeConverter.tominute(adpobj.Interval, adpobj.timeunit , adpobj.quota)
-
-
-
-
-
-
-      } catch (err) {}
+        console.log("Rate Limiting",rateLimiting)
+        var permin:string = await Time.tominute(rateLimiting.Interval, rateLimiting.timeunit , rateLimiting.quota ,key,name,uri)
+        adpobj.apiThrottlingPolicy= await permin
+        console.info(adpobj)
+        resolve(adpobj)
+      } catch (err) {
+          console.error(err)
+          reject(err)
+      }
     });
   }
   

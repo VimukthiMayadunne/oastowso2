@@ -103,10 +103,10 @@ components:
           tokenUrl: https://petstore.swagger.io/oauth/token
           scopes: {}
 x-global-spec:
-  x-global-cache: 300
+  x-global-cache: 370
   x-global-rateLimiting:
     Interval: 1
-    timeunit: minute
+    timeunit: min
     quota: 50000
   x-global-cors:
    corsConfigurationEnabled: true

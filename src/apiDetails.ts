@@ -8,6 +8,7 @@ const EndpointConfig = require('./models/endpoitConfig')
 
 async function sendRequest(data: any) {
   return new Promise(async function(resolve, reject) {
+    console.info(data)
     try {
       request(data, async function(error: string | undefined,response: any,body: any
       ) {
@@ -84,7 +85,7 @@ async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
       endpoint.production_endpoints.url = host
       endpoint.sandbox_endpoints.url = host
       var additionalProperties = await new AdditionalProperties({name:name,description:swagger.info.description,context:Bname,version:swagger.info.version , endpointConfig:endpoint, tags:tags  })
-      var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties )
+      var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties,name,uri,key )
       var reslt:any = await sendSwagger(adpobj,key,filename,uri)
       resolve(reslt);
     } catch (error) {
