@@ -9,8 +9,6 @@ async function sendRequest(data:any){
         request(data,async function (error: string | undefined, response: any, body: any) {
             if (error)
             throw new Error(error);
-            //console.log(response)
-            console.log(body)
             resolve(body);
           });
         }
