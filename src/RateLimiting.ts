@@ -21,7 +21,6 @@ async function upadateApi(apiObj:any , uri:string , key:string) {
 
             request(options, function (error: string | undefined, response: any, body: any) {
                 if (error) throw new Error(error);
-                console.log(body);
                 resolve(body)
             });
 

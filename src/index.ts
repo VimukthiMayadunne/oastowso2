@@ -28,12 +28,19 @@ class Oastowso2 extends Command {
     const {args, flags} = this.parse(Oastowso2)
     const name = flags.file || 'swagger.yaml'
     const uri = flags.uri || 'https://localhost:9443'
-    const userName = flags.username || 'admin'
-    const password = flags.username || 'admin'
+    const userName = flags.username // || 'admin'
+    const password = flags.username // || 'admin'
     var rslt=await apiToken.getCredintials(uri,userName,password);
     var key = 'Bearer '+await rslt
     var rep = await readSwagger.readSwagger(name,key,uri);
-    console.log(rep)
+    if(rep.name != null){
+      console.info("API Created Succesfully")
+      console.info("ID      :",rep.id)
+      console.info("Name    :",rep.name)
+    }
+    else{
+      console.error(rep)
+    }
   }
 
 }

@@ -96,7 +96,6 @@ async function checkPolicy(advancedPolicies: any, interval: number, timeUnit: st
             var policy= 'noPolicy'
             for(var i in advancedPolicies){
                 if(advancedPolicies[i].defaultLimit.timeUnit == timeUnit && advancedPolicies[i].defaultLimit.unitTime == interval && advancedPolicies[i].defaultLimit.requestCount == quota){
-                    console.log("Match Found")
                     policy = advancedPolicies[i].policyName
                     break
                 } 
