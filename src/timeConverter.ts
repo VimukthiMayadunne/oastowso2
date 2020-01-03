@@ -7,7 +7,6 @@ async function tominute(interval: number, timeUnit: string, quota: number, key: 
             var advancedPolicies = await getPolicies(uri,key)
             var policyName = await checkPolicy(advancedPolicies, interval, timeUnit, quota)
             var policy = (policyName == 'noPolicy') ? await createPolicy(interval, timeUnit, quota, key, name, uri) : policyName
-            console.log("RateLimitingPolicy",policy)
             resolve(policy)
         }
         catch (err) {
