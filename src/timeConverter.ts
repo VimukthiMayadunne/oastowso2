@@ -17,14 +17,6 @@ async function tominute(interval: number, timeUnit: string, quota: number, key: 
     })
 }
 
-
-
-
-
-
-
-
-
 async function createPolicy(interval: number, timeUnit: string, quota: number, key: any, name: string, uri: string) {
     return new Promise(async function (resolve, reject) {
         try {
@@ -39,8 +31,8 @@ async function createPolicy(interval: number, timeUnit: string, quota: number, k
                 },
                 body:
                 {
-                    policyName: name + 'RateLimiting',
-                    displayName: name + 'CustomPolicy',
+                    policyName: quota+'Per'+timeUnit,
+                    displayName: quota+'Per'+timeUnit,
                     description: 'Custom Ploicy created under API Fedaration Spec',
                     isDeployed: false,
                     defaultLimit:
@@ -58,7 +50,7 @@ async function createPolicy(interval: number, timeUnit: string, quota: number, k
                 if (error)
                     throw new Error(error);
                 console.log(body);
-              resolve(name+'RateLimiting')
+              resolve(body.policyName)
             });
 
 

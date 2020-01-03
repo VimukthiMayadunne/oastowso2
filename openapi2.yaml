@@ -107,7 +107,7 @@ x-global-spec:
   x-global-rateLimiting:
     Interval: 1
     timeunit: min
-    quota: 50000
+    quota: 500
   x-global-cors:
    corsConfigurationEnabled: true
    accessControlAllowOrigins:

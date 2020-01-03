@@ -7,7 +7,7 @@ async function apiFedarationSpec(fedarationSpec:any , adpobj:any ,name:string ,u
         try {
             adpobj= (fedarationSpec['x-global-cache'] != null)?await addCache(fedarationSpec['x-global-cache'],adpobj):adpobj;
             adpobj= (fedarationSpec['x-global-cors'].corsConfigurationEnabled == true)?await addCORS(fedarationSpec['x-global-cors'],adpobj):adpobj;
-            adpobj= (fedarationSpec['x-global-rateLimiting'] != null)?await addRateLimiting(fedarationSpec['x-global-rateLimiting'],adpobj,key,name,uri):adpobj;
+            // adpobj= (fedarationSpec['x-global-rateLimiting'] != null)?await addRateLimiting(fedarationSpec['x-global-rateLimiting'],adpobj,key,name,uri):adpobj;
             resolve(adpobj)
         } 
         catch (err) {

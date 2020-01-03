@@ -5,10 +5,10 @@ const apiFedarationSpec = require ('./apiFedaration');
 const fs = require('fs');
 const AdditionalProperties=require('./models/additionalProperties')
 const EndpointConfig = require('./models/endpoitConfig')
+const RateLimiting = require('./RateLimiting')
 
 async function sendRequest(data: any) {
   return new Promise(async function(resolve, reject) {
-    console.info(data)
     try {
       request(data, async function(error: string | undefined,response: any,body: any
       ) {
@@ -42,7 +42,7 @@ async function readSwagger(filename: string,key:string ,uri:string) {
   });
 }
 
-async function sendSwagger(apo:any,  key: string , filename:string,uri:string) {
+async function sendSwagger(apo:any,  key: string , filename:string,uri:string , swagger:any) {
   return new Promise(async function(resolve, reject) {
     try {
       var rslt = JSON.stringify(apo)
@@ -63,8 +63,12 @@ async function sendSwagger(apo:any,  key: string , filename:string,uri:string) {
       }
       var res:any=await sendRequest(options);
       var job= await JSON.parse(res)
-      console.log(res)
+      console.log(job)
+      var rsls = await RateLimiting.addRateLimiting(job , uri , key ,  swagger['x-global-spec']['x-global-rateLimiting'])
+      console.log(rsls)
       resolve(job.id)
+      
+
     }
     catch (err) {
       reject(err);
@@ -86,7 +90,7 @@ async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
       endpoint.sandbox_endpoints.url = host
       var additionalProperties = await new AdditionalProperties({name:name,description:swagger.info.description,context:Bname,version:swagger.info.version , endpointConfig:endpoint, tags:tags  })
       var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties,name,uri,key )
-      var reslt:any = await sendSwagger(adpobj,key,filename,uri)
+      var reslt:any = await sendSwagger(adpobj,key,filename,uri ,swagger)
       resolve(reslt);
     } catch (error) {
       console.log(error);
@@ -108,7 +112,7 @@ async function swagger2(swagger: any , key:string , uri:string , filename:string
       endpoint.sandbox_endpoints.url =host
       var additionalProperties = await new AdditionalProperties({name:name,description:swagger.info.description,context:Bname,version:swagger.info.version , tags:tags  })
       var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties )
-      var reslt:any = await sendSwagger(adpobj,key,filename,uri)
+      var reslt:any = await sendSwagger(adpobj,key,filename,uri,swagger)
       resolve(reslt);
     } 
     catch (error) {
