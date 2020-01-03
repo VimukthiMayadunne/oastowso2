@@ -47,7 +47,7 @@ async function createPolicy(interval: number, timeUnit: string, quota: number, k
 
             request(options,async function (error: string | undefined, response: any, body: any) {
                 if (error)
-                    throw new Error(error);
+                    reject(error);
                resolve(body.policyName)
             });
         }

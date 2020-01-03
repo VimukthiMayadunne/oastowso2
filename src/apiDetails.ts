@@ -13,7 +13,14 @@ async function sendRequest(data: any) {
       request(data, async function(error: string | undefined,response: any,body: any
       ) {
         if (error) throw new Error(error);
-        resolve(body);
+        var rBody= await JSON.parse(body)
+        if(rBody.code != null){
+          console.log("error")
+          reject(rBody)
+        }
+        else{
+         resolve(rBody);
+        }
       });
     } catch (err) {
       console.error(err)
@@ -28,7 +35,7 @@ async function readSwagger(filename: string,key:string ,uri:string) {
       readYaml(filename, async function(err: any, data: any) {
         if (err) {
           console.log("Unable To Read the Swagger File");
-          throw new Error(err)
+          reject(err)
         } else {
           var swagger = await data;
           var rslt =
@@ -63,8 +70,7 @@ async function sendSwagger(apo:any,  key: string , filename:string,uri:string , 
         }     
       }
       var res:any=await sendRequest(options);
-      var job= await JSON.parse(res)
-      var rsls = (job.id != null)?await RateLimiting.addRateLimiting(job , uri , key ,  swagger['x-global-spec']['x-global-rateLimiting']):console.error("Unable To add Rate Limiting")
+      var rsls = (res.id != null && swagger['x-global-spec']['x-global-rateLimiting'] != null)?await RateLimiting.addRateLimiting(res , uri , key ,  swagger['x-global-spec']['x-global-rateLimiting']):reject("Unable To add Rate Limiting")
       resolve(rsls)
     }
     catch (err) {

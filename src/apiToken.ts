@@ -7,14 +7,15 @@ async function sendRequest(data:any){
     return new Promise(async function(resolve,reject){
         try{
         request(data,async function (error: string | undefined, response: any, body: any) {
-            if (error)
-            throw new Error(error);
+            if (error){
+                reject(error)
+            }
             resolve(body);
           });
         }
-        catch(err){
-            console.error(err)
-            reject(err)
+        catch(error){
+            console.error(error)
+            reject(error)
         }  
     })
 }
