@@ -28,6 +28,7 @@ async function readSwagger(filename: string,key:string ,uri:string) {
       readYaml(filename, async function(err: any, data: any) {
         if (err) {
           console.log("Unable To Read the Swagger File");
+          throw new Error(err)
         } else {
           var swagger = await data;
           var rslt =
@@ -63,12 +64,8 @@ async function sendSwagger(apo:any,  key: string , filename:string,uri:string , 
       }
       var res:any=await sendRequest(options);
       var job= await JSON.parse(res)
-      console.log(job)
-      var rsls = await RateLimiting.addRateLimiting(job , uri , key ,  swagger['x-global-spec']['x-global-rateLimiting'])
-      console.log(rsls)
-      resolve(job.id)
-      
-
+      var rsls = (job.id != null)?await RateLimiting.addRateLimiting(job , uri , key ,  swagger['x-global-spec']['x-global-rateLimiting']):console.error("Unable To add Rate Limiting")
+      resolve(rsls)
     }
     catch (err) {
       reject(err);
@@ -92,6 +89,7 @@ async function oas3(swagger: any , key:string ,uri:string ,filename:string) {
       var adpobj:any = await apiFedarationSpec.apiFedarationSpec(swagger['x-global-spec'] ,additionalProperties,name,uri,key )
       var reslt:any = await sendSwagger(adpobj,key,filename,uri ,swagger)
       resolve(reslt);
+
     } catch (error) {
       console.log(error);
       reject(error);

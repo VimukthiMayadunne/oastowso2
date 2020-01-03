@@ -39,7 +39,6 @@ async function addRateLimiting(apiObj:any , uri:string , key:string ,rateLimtObj
             var rateLimiting = await TimeConverter.tominute(rateLimtObj.Interval, rateLimtObj.timeunit, rateLimtObj.quota, key, apiObj.name , uri)
             apiObj.apiThrottlingPolicy = rateLimiting
             var rslt = await upadateApi(apiObj,uri,key)
-            console.log("::--------------------:: ",rateLimiting)
             resolve(rslt)
         }
         catch (err) {
