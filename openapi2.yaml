@@ -39,11 +39,9 @@ paths:
           type: string
       - name: appid
         in: query
-        description: key - c0430ab5b358094192e01693bb0adef5
         required: true
         schema:
           type: string
-          default: c0430ab5b358094192e01693bb0adef5
       responses:
         200:
           description: Wether of The Given City ID
@@ -59,8 +57,6 @@ paths:
           description: Your account is temporary blocked due to exceeding of requests
             limitation of your subscription type.
           content: {}
-      x-auth-type: Application & Application User
-      x-throttling-tier: 50KPerMin
   /forecast:
     get:
       parameters:
@@ -107,11 +103,11 @@ components:
           tokenUrl: https://petstore.swagger.io/oauth/token
           scopes: {}
 x-global-spec:
-  x-global-cache: 300
+  x-global-cache: 370
   x-global-rateLimiting:
     Interval: 1
-    timeunit: minute
-    quota: 50000
+    timeunit: min
+    quota: 500
   x-global-cors:
    corsConfigurationEnabled: true
    accessControlAllowOrigins:

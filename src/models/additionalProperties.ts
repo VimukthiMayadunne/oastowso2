@@ -61,7 +61,7 @@ let AdditionalPropertiesSchema = new Schema({
 
     'apiThrottlingPolicy':{
         type:String,
-        default:"Unlimited",
+        default:"10KPerMin",
         description:"The API level throttling policy selected for the particular API"
     },
     'corsConfiguration':{
